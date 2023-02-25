@@ -1,15 +1,28 @@
 package com.peerlender.lendingengine.lendingengine.domain.model;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.Objects;
 
 public class User {
 
-    private final String firstName;
-    private final String lastName;
-    private final int age;
-    private final String occupation;
+    @Id
+    private long id;
+    private String firstName;
+    private String lastName;
+    private int age;
+    private String occupation;
+    public User(){
 
-    public User(String firstName, String lastName, int age, String occupation) {
+    }
+
+    public User(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public User(long id, String firstName, String lastName, int age, String occupation) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
