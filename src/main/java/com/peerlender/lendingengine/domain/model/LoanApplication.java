@@ -1,7 +1,9 @@
-package com.peerlender.lendingengine.lendingengine.domain.model;
+package com.peerlender.lendingengine.domain.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -11,11 +13,14 @@ public final class LoanApplication {
 
     @Id
     private long id;
-    private final int amount;
-    private final User borrower;
-    private final Duration repaymentTerm;
-    private final double interestRate;
+    private  int amount;
+    @ManyToOne
+    private User borrower;
+    private Duration repaymentTerm;
+    private double interestRate;
 
+    public LoanApplication() {
+    }
 
     public LoanApplication(int amount, User borrower, Duration repaymentTerm, double interestRate) {
         this.amount = amount;

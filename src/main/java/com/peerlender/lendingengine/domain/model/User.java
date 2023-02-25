@@ -1,9 +1,13 @@
-package com.peerlender.lendingengine.lendingengine.domain.model;
+package com.peerlender.lendingengine.domain.model;
 
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.util.Objects;
 
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -13,12 +17,6 @@ public class User {
     private int age;
     private String occupation;
     public User(){
-
-    }
-
-    public User(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
     public User(long id, String firstName, String lastName, int age, String occupation) {

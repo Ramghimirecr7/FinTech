@@ -1,8 +1,5 @@
-package com.peerlender.lendingengine.lendingengine.application.model;
+package com.peerlender.lendingengine.application.model;
 
-import com.peerlender.lendingengine.lendingengine.domain.model.User;
-
-import java.time.Duration;
 import java.util.Objects;
 
 public class LoanRequest {
