@@ -21,7 +21,7 @@ public class Loan {
 
     private Loan(){}
 
-    private Loan(User lender, LoanApplication loanApplication){
+    public Loan(User lender, LoanApplication loanApplication){
 
 
     }
