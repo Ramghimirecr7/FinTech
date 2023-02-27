@@ -63,6 +63,10 @@ public final class LoanApplication {
         return repaymentTermInDays;
     }
 
+    public long getId() {
+        return id;
+    }
+
     public double getInterestRate() {
         return interestRate;
     }
