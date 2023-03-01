@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public class LoanRequest {
     private final int amount;
-    private final long borrowerId;
     private final int daysToRepay;
     private final double interestRate;
 
@@ -13,9 +12,6 @@ public class LoanRequest {
         return amount;
     }
 
-    public long getBorrowerId() {
-        return borrowerId;
-    }
 
     public int getDaysToRepay() {
         return daysToRepay;
@@ -25,9 +21,8 @@ public class LoanRequest {
         return interestRate;
     }
 
-    public LoanRequest(int amount, long borrowerId, int daysToRepay, double interestRate) {
+    public LoanRequest(int amount, int daysToRepay, double interestRate) {
         this.amount = amount;
-        this.borrowerId = borrowerId;
         this.daysToRepay = daysToRepay;
         this.interestRate = interestRate;
     }
@@ -37,19 +32,18 @@ public class LoanRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LoanRequest that = (LoanRequest) o;
-        return amount == that.amount && borrowerId == that.borrowerId && daysToRepay == that.daysToRepay && Double.compare(that.interestRate, interestRate) == 0;
+        return amount == that.amount  && daysToRepay == that.daysToRepay && Double.compare(that.interestRate, interestRate) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(amount, borrowerId, daysToRepay, interestRate);
+        return Objects.hash(amount, daysToRepay, interestRate);
     }
 
     @Override
     public String   toString() {
         return "LoanRequest{" +
                 "amount=" + amount +
-                ", borrowerId=" + borrowerId +
                 ", daysToRepay=" + daysToRepay +
                 ", interestRate=" + interestRate +
                 '}';
