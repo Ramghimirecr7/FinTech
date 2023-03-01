@@ -1,0 +1,9 @@
+server:
+  port:
+    8081
+
+jdbc:
+  url:
+    jdbc:h2:mem:db
+  NON_KEYWORDS:
+    User
