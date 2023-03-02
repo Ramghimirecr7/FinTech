@@ -48,7 +48,7 @@ public class LoanController {
         return userRepository.findAll();
     }
 
-    @GetMapping(value = "/loan/getRequests")
+    @GetMapping(value = "/loan/getAllApplications")
     public List<LoanApplication> findLoanApplications(HttpServletRequest request){
         tokenValidationService.ValidateTokenAndGetUser(request.getHeader(HttpHeaders.AUTHORIZATION));
 

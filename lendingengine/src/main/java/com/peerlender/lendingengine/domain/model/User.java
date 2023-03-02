@@ -1,8 +1,6 @@
 package com.peerlender.lendingengine.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -16,6 +14,8 @@ public final class User {
     private String lastName;
     private int age;
     private String occupation;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Balance balance;
     public User(){
     }
 
@@ -23,12 +23,13 @@ public final class User {
         return username;
     }
 
-    public User(String username, String firstName, String lastName, int age, String occupation) {
+    public User(String username, String firstName, String lastName, int age, String occupation, Balance balance) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.occupation = occupation;
+        this.balance = balance;
     }
 
     public String getFirstName() {
@@ -45,6 +46,17 @@ public final class User {
 
     public String getOccupation() {
         return occupation;
+    }
+    public Balance getBalance(){
+        return balance;
+    }
+
+    public void topUp(final Money money){
+        balance.topUp(money);
+    }
+
+    public void withdraw(final Money money){
+        balance.withdraw(money);
     }
 
     @Override

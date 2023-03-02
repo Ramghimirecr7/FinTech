@@ -1,6 +1,7 @@
 package com.lending.securityapp.application;
 
 import com.lending.securityapp.repository.UserRepository;
+import com.lending.securityapp.user.DTO.UserDTO;
 import com.lending.securityapp.user.exception.UserNotFoundException;
 import com.lending.securityapp.user.model.User;
 import com.lending.securityapp.user.service.NotificationService;
@@ -27,9 +28,10 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody User user){
+    public void register(@RequestBody UserDTO userDTO){
+        User user = new User(userDTO.getUsername(),userDTO.getPassword());
         userRepository.save(user);
-        notificationService.sendMessage(user);
+        notificationService.sendMessage(userDTO);
     }
 
 }
