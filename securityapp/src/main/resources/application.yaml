@@ -7,3 +7,8 @@ jdbc:
     jdbc:h2:mem:db
   NON_KEYWORDS:
     User
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672

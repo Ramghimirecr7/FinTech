@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "`User`")
-public class User {
+public final class User {
     @Id
     private String username;
     private String firstName;
