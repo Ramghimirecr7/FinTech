@@ -1,13 +1,12 @@
 package com.peerlender.lendingengine.application;
 
+import com.peerlender.lendingengine.application.model.LoanRepaymentRequest;
 import com.peerlender.lendingengine.application.model.LoanRequest;
 import com.peerlender.lendingengine.application.service.TokenValidationService;
-import com.peerlender.lendingengine.domain.model.Loan;
-import com.peerlender.lendingengine.domain.model.LoanApplication;
+import com.peerlender.lendingengine.domain.model.*;
 import com.peerlender.lendingengine.domain.repository.LoanApplicationRepository;
 import com.peerlender.lendingengine.domain.repository.LoanRepository;
 import com.peerlender.lendingengine.domain.repository.UserRepository;
-import com.peerlender.lendingengine.domain.model.User;
 import com.peerlender.lendingengine.domain.service.LoanApplicationAdapter;
 import com.peerlender.lendingengine.domain.service.LoanService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,16 +20,14 @@ import java.util.List;
 public class LoanController {
 
     private final LoanApplicationRepository loanApplicationRepository;
-    private final UserRepository userRepository;
     private final LoanApplicationAdapter loanApplicationAdapter;
     private final LoanService loanService;
 
     private final TokenValidationService tokenValidationService;
 
     @Autowired
-    public LoanController(LoanApplicationRepository loanApplicationRepository, UserRepository userRepository, LoanApplicationAdapter loanApplicationAdapter, LoanService loanService, TokenValidationService tokenValidationService) {
+    public LoanController(LoanApplicationRepository loanApplicationRepository, LoanApplicationAdapter loanApplicationAdapter, LoanService loanService, TokenValidationService tokenValidationService) {
         this.loanApplicationRepository = loanApplicationRepository;
-        this.userRepository = userRepository;
         this.loanApplicationAdapter = loanApplicationAdapter;
         this.loanService = loanService;
         this.tokenValidationService = tokenValidationService;
@@ -47,8 +44,7 @@ public class LoanController {
     @GetMapping(value = "/loan/getAllApplications")
     public List<LoanApplication> findLoanApplications(HttpServletRequest request){
         tokenValidationService.ValidateTokenAndGetUser(request.getHeader(HttpHeaders.AUTHORIZATION));
-
-        return loanApplicationRepository.findAll();
+        return loanApplicationRepository.findAllByStatusEquals(Status.ONGOING);
     }
 
     @PostMapping(value = "/loan/acceptLoanRequest/{loanApplicationId}")
@@ -65,16 +61,22 @@ public class LoanController {
         return loanService.getLoans();
     }
 
-    @GetMapping("/loans/borrowed")
-    public List<Loan> findBorrowedLoans(@RequestHeader String authorization){
+    @GetMapping("/loans/{status}/borrowed")
+    public List<Loan> findBorrowedLoans(@RequestHeader String authorization, @PathVariable Status status){
         User borrower = tokenValidationService.ValidateTokenAndGetUser(authorization);
-        return loanService.findAllBorrowedLoans(borrower);
+        return loanService.findAllBorrowedLoans(borrower,status);
     }
 
-    @GetMapping("/loans/lent")
-    public List<Loan> findLentLoans(@RequestHeader String authorization){
+    @GetMapping("/loans/{status}/lent")
+    public List<Loan> findLentLoans(@RequestHeader String authorization, @PathVariable Status status){
         User lender = tokenValidationService.ValidateTokenAndGetUser(authorization);
-        return loanService.findAllLentLoans(lender);
+        return loanService.findAllLentLoans(lender, status);
+    }
+    @PostMapping("/loan/repay")
+    public void repayLoan(@RequestBody LoanRepaymentRequest request,@RequestHeader String authorization){
+        User borrower = tokenValidationService.ValidateTokenAndGetUser(authorization);
+        loanService.repayLoan(request.getAmount(), request.getLoanId(), borrower);
+
     }
 
 }

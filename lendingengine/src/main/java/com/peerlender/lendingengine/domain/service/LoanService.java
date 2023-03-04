@@ -1,6 +1,7 @@
 package com.peerlender.lendingengine.domain.service;
 
 import com.peerlender.lendingengine.domain.exception.LoanApplicationNotFoundException;
+import com.peerlender.lendingengine.domain.exception.LoanNotFoundException;
 import com.peerlender.lendingengine.domain.exception.UserNotFoundException;
 import com.peerlender.lendingengine.domain.model.*;
 import com.peerlender.lendingengine.domain.repository.LoanApplicationRepository;
@@ -25,15 +26,20 @@ public class LoanService {
         this.userRepository = userRepository;
         this.loanRepository = loanRepository;
     }
-
+    @Transactional
     public void acceptLoan(final long loanApplicationId, final String lenderUsername){
         User lender = findUser(lenderUsername);
         LoanApplication loanApplication = findLoanApplication(loanApplicationId);
-        User borrower = loanApplication.getBorrower();
-        Money money = new Money(loanApplication.getAmount(), Currency.USD);
-        lender.withdraw(money);
-        borrower.topUp(money);
-        loanRepository.save(new Loan(lender, loanApplication));
+        loanRepository.save(loanApplication.acceptLoanApplication(lender));
+    }
+    @Transactional
+    public void repayLoan(final Money amountToRepay, final long loanId, final User borrower){
+        Loan loan = loanRepository.findOneByIdAndBorrower(loanId, borrower)
+                .orElseThrow(LoanNotFoundException::new);
+
+        Money actualPaidAmount = amountToRepay.getAmount() > loan.getAmountOwed().getAmount()
+                ? loan.getAmountOwed() : amountToRepay;
+        loan.repay(actualPaidAmount);
     }
 
     @Transactional
@@ -49,11 +55,11 @@ public class LoanService {
     public List<Loan> getLoans(){
         return loanRepository.findAll();
     }
-    public List<Loan> findAllBorrowedLoans(final User borrower){
-        return loanRepository.findAllByBorrower(borrower);
+    public List<Loan> findAllBorrowedLoans(final User borrower, final Status status){
+        return loanRepository.findAllByBorrowerAndStatus(borrower, status);
     }
 
-    public List<Loan> findAllLentLoans(final User lender){
-        return loanRepository.findAllByLender(lender);
+    public List<Loan> findAllLentLoans(final User lender, final Status status){
+        return loanRepository.findAllByLenderAndStatus(lender, status);
     }
 }

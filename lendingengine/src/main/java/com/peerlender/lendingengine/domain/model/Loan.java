@@ -1,9 +1,6 @@
 package com.peerlender.lendingengine.domain.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -17,14 +14,40 @@ public class Loan {
     private User borrower;
     @ManyToOne
     private User lender;
-    private int amount;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Money loanAmount;
     private double interestRate;
     private LocalDate dateLent;
     private LocalDate dateDue;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Money amountRepayed;
+    private Status status;
 
     private Loan(){}
 
     public Loan(User lender, LoanApplication loanApplication){
+        this.borrower=loanApplication.getBorrower();
+        this.lender=lender;
+        this.loanAmount = loanApplication.getAmount();
+        this.interestRate = loanApplication.getInterestRate();
+        this.dateLent = LocalDate.now();
+        this.dateDue = LocalDate.now().plusDays(loanApplication.getRepaymentTermInDays());
+        this.amountRepayed = Money.ZERO;
+        this.status = Status.ONGOING;
+    }
+
+    public void repay(final Money money){
+        borrower.withdraw(money);
+        lender.topUp(money);
+        amountRepayed = amountRepayed.add(money);
+
+        if(getAmountOwed().equals(Money.ZERO)){
+            status=Status.COMPLETED;
+        }
+    }
+
+    public Money getAmountOwed(){
+        return loanAmount.times(1+interestRate/100d).minus(amountRepayed);
     }
 
     public long getId() {
@@ -39,8 +62,8 @@ public class Loan {
         return lender;
     }
 
-    public int getAmount() {
-        return amount;
+    public Money getAmount() {
+        return loanAmount;
     }
 
     public double getInterestRate() {
