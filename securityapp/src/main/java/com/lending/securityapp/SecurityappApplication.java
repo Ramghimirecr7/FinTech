@@ -21,5 +21,6 @@ public class SecurityappApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		userRepository.save(new User("John","12345"));
 		userRepository.save(new User("Peter","67890"));
+		userRepository.save(new User("Jasmine", "34567"));
 	}
 }
