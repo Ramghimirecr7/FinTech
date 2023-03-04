@@ -49,4 +49,11 @@ public class LoanService {
     public List<Loan> getLoans(){
         return loanRepository.findAll();
     }
+    public List<Loan> findAllBorrowedLoans(final User borrower){
+        return loanRepository.findAllByBorrower(borrower);
+    }
+
+    public List<Loan> findAllLentLoans(final User lender){
+        return loanRepository.findAllByLender(lender);
+    }
 }
