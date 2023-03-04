@@ -1,6 +1,7 @@
 package com.peerlender.lendingengine.application;
 
 import com.peerlender.lendingengine.application.service.TokenValidationService;
+import com.peerlender.lendingengine.application.service.impl.TokenValidationServiceImpl;
 import com.peerlender.lendingengine.domain.model.User;
 import com.peerlender.lendingengine.domain.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;

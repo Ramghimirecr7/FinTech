@@ -3,10 +3,9 @@ package com.peerlender.lendingengine.application;
 import com.peerlender.lendingengine.application.model.LoanRepaymentRequest;
 import com.peerlender.lendingengine.application.model.LoanRequest;
 import com.peerlender.lendingengine.application.service.TokenValidationService;
+import com.peerlender.lendingengine.application.service.impl.TokenValidationServiceImpl;
 import com.peerlender.lendingengine.domain.model.*;
 import com.peerlender.lendingengine.domain.repository.LoanApplicationRepository;
-import com.peerlender.lendingengine.domain.repository.LoanRepository;
-import com.peerlender.lendingengine.domain.repository.UserRepository;
 import com.peerlender.lendingengine.domain.service.LoanApplicationAdapter;
 import com.peerlender.lendingengine.domain.service.LoanService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +25,8 @@ public class LoanController {
     private final TokenValidationService tokenValidationService;
 
     @Autowired
-    public LoanController(LoanApplicationRepository loanApplicationRepository, LoanApplicationAdapter loanApplicationAdapter, LoanService loanService, TokenValidationService tokenValidationService) {
+    public LoanController(LoanApplicationRepository loanApplicationRepository, LoanApplicationAdapter loanApplicationAdapter,
+                          LoanService loanService, TokenValidationService tokenValidationService) {
         this.loanApplicationRepository = loanApplicationRepository;
         this.loanApplicationAdapter = loanApplicationAdapter;
         this.loanService = loanService;
@@ -41,7 +41,7 @@ public class LoanController {
     }
 
 
-    @GetMapping(value = "/loan/getAllApplications")
+    @GetMapping(value = "/loan/requests")
     public List<LoanApplication> findLoanApplications(HttpServletRequest request){
         tokenValidationService.ValidateTokenAndGetUser(request.getHeader(HttpHeaders.AUTHORIZATION));
         return loanApplicationRepository.findAllByStatusEquals(Status.ONGOING);
